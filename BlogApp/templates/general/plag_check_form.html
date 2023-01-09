@@ -1,0 +1,27 @@
+{% extends "form_base.html" %} 
+{% from "_formhelpers.html" import blog_render_field %} 
+
+{% block title %} Plagarism Checker {% endblock %} 
+
+{% block main %}
+<main class="bg-white max-w-lg mx-auto p-6 md:p-12 my-8 rounded-lg shadow-2xl">
+    <section>
+        <h3 class="font-bold text-2xl">Plagarism Checker</h3>
+        <p class="text-gray-600 pt-2">Use this feature to detect plagarism in your essays!</p>
+    </section>
+
+    <section class="mt-0">
+        <form class="flex flex-col" method="POST" target='_blank' action="{{ url_for('general.plag_check') }}">
+            {{ form.csrf_token }}
+            {{ blog_render_field(form.query, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }}
+            {{ blog_render_field(form.content, placeholder='Minimum 100 characters', class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-40") }}
+            {{ blog_render_field(form.num_res, placeholder='Number of websites to scrape', class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }}
+            <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-6" type="submit">Get Results</button>
+        </form>
+    </section>
+</main>
+{% endblock %} 
+
+
+{% block href1 %}/your_blogs{% endblock %}                {% block href_tag1 %}Blogs{% endblock %}
+{% block href2 %}/contact_us{% endblock %}                {% block href_tag2 %}Contact Us{% endblock %}

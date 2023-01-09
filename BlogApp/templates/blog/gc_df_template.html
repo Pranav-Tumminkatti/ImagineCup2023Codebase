@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %} Output {% endblock %}
+
+{% block head %}
+<style>
+.mystyle {
+    font-size: 12pt; 
+    font-family: Arial;
+    border-collapse: collapse; 
+    border: 3px solid silver;
+}
+
+body{
+    margin: 50px;
+    color: black;
+}
+
+th{
+    text-transform: uppercase; 
+    text-align: center;
+}
+
+.mystyle td, th {
+    padding: 8px;
+}
+
+.mystyle tr:nth-child(even) {
+    background: #E0E0E0;
+}
+
+/*
+.mystyle tr:hover {
+    background: silver;
+    cursor: pointer;
+}*/
+</style>
+{% endblock %}
+
+
+{% block body %} 
+<section class="text-gray-600 body-font">
+    <div class="container py-12 mx-auto">
+        <div class="flex flex-col text-center w-full mb-10">
+            <h2 class="text-xs text-yellow-500 tracking-widest font-medium title-font mb-1">Output</h2>
+            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Compiled Dataframe of Errors:</h1>
+            <p>{{ table|safe }}</p>
+        </div>
+    </div>
+</section>
+
+<button onclick="window.location.href='/display_post/{{ item.id }}'" class="w-full h-12 px-12 text-white transition-colors duration-150 bg-indigo-600 rounded-lg focus:shadow-outline hover:bg-indigo-800">----- Back to the post -----</button>
+{% endblock %}

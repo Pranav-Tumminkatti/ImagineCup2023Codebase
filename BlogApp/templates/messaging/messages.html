@@ -1,0 +1,60 @@
+{% extends 'profile_base.html' %}
+
+{% block title %} Notifications {% endblock %}
+
+{% block messages %}active-nav-link{% endblock %}
+{% block messages_dd %}active-nav-link{% endblock %}
+
+{% block body %}
+<div class = "pr-48 pl-48 pt-12 pb-12">
+    <p>Unread messages are in read.</p>
+    {% if (received_messages|length) > 0%}
+    <h1 class='mb-2 font-bold text-xl'>Received messages</h1>
+    {% else %}
+    <h1>No received messages</h1>
+    {% endif %}
+
+    {% for i in received_messages %}
+    <div class='flex items-center justify-between rounded-lg p-4 {% if i.read == False %} bg-red-500 {% endif %}'>
+    <div class="flex items-center">
+        <img src = "{{i.se.img}}" class = "h-10 w-10 rounded-full"></img>
+        <div class = "flex flex-col ml-3">
+            <div class="font-medium leading-none">{{i.se.name}}</div>
+            <p class="text-sm text-gray-600 leading-none mt-1">{{i.time}}</p>
+            <p class="text-sm text-gray-600 leading-none mt-1">{{i.content}}</p>
+        </div>
+    </div>
+    <a href = '/view_message/{{i.id}}' class="border-white flex-no-shrink {% if i.read == False %}bg-gray-500{% else %}bg-red-500{% endif %}  px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-w border-red-500 text-white rounded-full">View</a>
+    </div>
+    <br>
+    <hr>
+    <br>
+    {% endfor %}
+    <br>
+    <hr>
+    <br>
+    {% if (sent_messages|length) > 0%}
+    <h1 class='mb-2 font-bold text-xl'>Sent messages</h1>
+    {% else %}
+    <h1>No sent messages</h1>
+    {% endif %}
+
+    {% for i in sent_messages %}
+    <div class='flex items-center justify-between rounded-lg p-4 {% if i.read == False %} bg-red-500 {% endif %}'>
+    <div class="flex items-center">
+        <img src = "{{i.se.img}}" class = "h-10 w-10 rounded-full"></img>
+        <div class = "flex flex-col ml-3">
+            <div class="font-medium leading-none">{{i.se.name}}</div>
+            <p class="text-sm text-gray-600 leading-none mt-1">{{i.time}}</p>
+            <p class="text-sm text-gray-600 leading-none mt-1">{{i.content}}</p>
+        </div>
+    </div>
+    <a href = '/view_message/{{i.id}}' class="flex-no-shrink {% if i.read == False %}bg-gray-500{% else %}bg-red-500{% endif %} px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-w border-white-500 text-white rounded-full">View</a>
+    </div>
+    <br>
+    <hr>
+    <br>
+    {% endfor %}
+   
+</div>
+{% endblock %}

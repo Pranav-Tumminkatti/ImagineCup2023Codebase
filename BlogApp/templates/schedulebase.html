@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang='en-sg'>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="Joshua Sin">
+	<meta name="description" content="A blogsite">
+	<meta name="robots" content="all">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Font Awesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+  <title>{% block title %} Scheduler app {% endblock %}</title>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class = 'container'>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a href = '/studytools' class="nav-link active">Home</a>
+      <a href = '/studytools/scheduler' class="nav-link active">New Schedule</a>
+      <a href = '/' class="nav-link active">Unveiled Home</a>
+      <a href = '/dashboard' class="nav-link active">Your Profile</a>
+    </nav>
+    {% block body %}
+    {% endblock %}
+  </div>
+</body>

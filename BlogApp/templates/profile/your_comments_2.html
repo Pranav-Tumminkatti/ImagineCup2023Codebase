@@ -1,0 +1,35 @@
+{% extends "profile_base.html" %}
+
+{% block your_comments %}active-nav-link{% endblock %}
+{% block your_comments_dd %}active-nav-link{% endblock %}
+
+{% block title %} Your Comments {% endblock %}
+
+{% block body %} 
+<section class="text-gray-600 body-font">
+    <div class="container px-5 py-24 mx-auto">
+      <div class="lg:w-2/3 flex flex-col sm:flex-row sm:items-center items-center mx-auto">
+        <table class = "table-auto">
+            <tr>
+                <td><strong>Comment ID</strong></td>
+                <td><strong>Time</strong></td>
+                <td><strong>Comment</strong></td>
+                <td><strong>Post ID</strong></td>
+                <td>...</td>
+            </tr>
+      {% for i in comments %} 
+      <tr>
+          <td class="w-1/4">{{i.id}}</td>
+          <td class="w-1/2">{{i.time}}</td>
+          <td class="w-1/4">{{i.comment}}</td>
+          <td class="w-1/2">{{i.blog_id}}</td>
+          <td class = "w-1/2">
+            <a href = '/edit_comment/{{i.id}}?prev={{i.blog_id}}' class="ml-2 font-medium flex-shrink-0 text-indigo-600 hover:text-indigo-500 text-right">Edit Comment</a>
+          </td>
+      </tr>
+      {% endfor %} 
+      </table>
+      </div>
+    </div>
+  </section>
+{% endblock %}

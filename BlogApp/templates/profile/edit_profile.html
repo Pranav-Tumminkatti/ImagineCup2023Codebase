@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Pranav Tumminkatti">
+	<meta name="description" content="A blogsite">
+	<meta name="robots" content="all">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>Edit Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+</head>
+<body class='m-14 bg-gray-50'>
+    <div>
+        <div class="md:grid md:grid-cols-3 md:gap-6">
+        <div class="md:col-span-1">
+            <div class="px-4 sm:px-0">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">Profile</h3>
+            <p class="mt-1 text-sm text-gray-600">
+                This information will be displayed publicly so be careful what you share.
+            </p>
+            </div>
+        </div>
+        <div class="mt-5 md:mt-0 md:col-span-2">
+            <form method="POST" action="{{ url_for('profile.edit_profile') }}" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <div class="shadow sm:rounded-md sm:overflow-hidden bg-white">
+                <div class='pl-6 pt-6'>
+                    <label class="block text-sm font-medium text-gray-700">
+                    Photo
+                    </label>
+                    <div class="mt-1 flex items-center">
+                    <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 mr-3">
+                        <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </span>
+                    
+                {{form.img}}
+                    </div>
+                </div>
+
+                <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                <div>
+                    {{form.description.label(class="block text-sm font-medium text-gray-700")}}
+                    <div class="mt-1">
+                        {{form.description(class="p-2 border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md")}}
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">
+                    Brief description for your profile.
+                    </p>
+                </div>
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-6 sm:col-span-3">
+                        {{form.name.label(class="block text-sm font-medium text-gray-700")}}
+                        {{form.name(class="p-1.5 border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md")}}
+                    </div>
+    
+                    <div class="col-span-6 sm:col-span-3">
+                        {{form.job.label(class="block text-sm font-medium text-gray-700")}}
+                        {{form.job(class="p-1.5 border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md")}}
+                    </div>
+    
+                    <div class="col-span-6 sm:col-span-4">
+                        {{form.location.label(class="block text-sm font-medium text-gray-700")}}
+                        {{form.location(class="p-1.5 border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md")}}
+                    </div>
+    
+                    <div class="col-span-6">
+                        {{form.fb.label(class="block text-sm font-medium text-gray-700")}}
+                        {{form.fb(class="p-1.5 border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md")}}
+                    </div>
+    
+                    <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                        {{form.tw.label(class="block text-sm font-medium text-gray-700")}}
+                        {{form.tw(class="p-1.5 border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md")}}
+                    </div>
+    
+                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                        {{form.ig.label(class="block text-sm font-medium text-gray-700")}}
+                        {{form.ig(class="p-1.5 border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border rounded-md")}}
+                    </div>
+                </div>
+                </div>
+                <div class="px-4 py-3 bg-gray-100 text-right sm:px-6">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Save
+                </button>
+                </div>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    
+    </div>
+  
+  
+</body>
+</html>

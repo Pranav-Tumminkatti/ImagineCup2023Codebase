@@ -1,0 +1,252 @@
+{% extends "base.html" %} 
+{% from "_formhelpers.html" import blog_render_field %} 
+
+{% block title %} {{ post['title'] }} {% endblock %} 
+
+{% block head %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+
+    .font-family-karla {
+        font-family: karla;
+    }
+</style>
+
+<!-- AlpineJS -->
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+{% endblock %}
+<!-- Code for pushing data without reloading the page, but we cannot use this because the svg changes when the user likes the post
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous">
+</script>
+<script type="text/javascript">
+$(document).on('submit','#ld',function(e)
+                {
+    console.log('hello');
+    e.preventDefault();
+    $.ajax({
+    type:'POST',
+    url:'/like_post/{{post.id}}',
+    data:{
+    },
+    success:function()
+    {
+        alert('saved');
+    }
+    })
+});
+</script>
+{% endblock %}
+-->
+
+{% block body %}
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <!--Progress Bar-->
+    <div id="progress" class="fixed w-full z-10 top-0 h-1 z-20 top-0" style="background:linear-gradient(to right, #4dc0b5 var(--scroll), transparent 0);"></div>
+    <!--Container-->
+    <div class="container w-full md:max-w-3xl mx-auto pt-20">
+
+        <div class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal" style="font-family:Georgia,serif;">
+
+            <!--Title-->
+            <div class="font-sans">
+                <p class="text-base md:text-sm text-green-500 font-bold text-left">&lt; <a href="/your_blogs" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">BACK TO ALL BLOGS</a></p>
+                <h1 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">{{ post.title }}</h1>
+                <p class="text-sm md:text-base font-normal text-gray-600">Published on {{ post.date_created.strftime("%B %d, %Y at %H:%M %p") }}</p>
+            </div>
+            <!--all content are jinja values which are determined by the post that is being called-->
+
+            <img src = '{{post.img}}' class = 'mt-2 mb-0 w-full rounded-md'></img>
+            <br>
+            <!--Content-->
+            <p class="py-6 whitespace-pre-wrap">{{ post.content }}</p>
+        </div>
+
+        <!--Category -->
+        <div id='ld' class="text-base md:text-sm text-gray-500 px-4 py-6">
+            Tags: 
+            {% for tag in post.tags %}
+                {% if loop.index != loop.length %}
+                {{tag.name}}, 
+                {% else %}
+                {{tag.name}}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!--like button-->
+        <div class = "flex flex-auto">
+        
+        {% if is_liked==False %}
+        <button onclick="window.location.href='/like_post/{{ post.id }}'">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 m-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+        </svg>
+        </button> 
+        {% else %}
+        <button onclick="window.location.href='/un_like_post/{{ post.id }}'">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 m-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+        </svg>
+		</button> 
+        {% endif %} 
+        <p>{{likes}}</p>
+        
+        <!--dislike button-->
+        {% if is_disliked==False %}
+        <button onclick="window.location.href='/dislike_post/{{ post.id }}'">
+		<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 m-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" />
+		</svg>
+		</button> 
+        {% else %}
+        <button onclick="window.location.href='/un_dislike_post/{{ post.id }}'">
+		<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 m-5" viewBox="0 0 20 20" fill="currentColor">
+			<path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
+		</svg>
+		</button> 
+        {% endif %}
+        <p>{{dislikes}}</p>
+    </div>
+        <!--Divider-->
+        <hr class="border-b-2 border-gray-400 mb-6 mx-4"> 
+
+        {% if is_owner==True %}
+            <!--Author-->
+            <div class="flex w-full items-center font-sans px-4 py-6">
+                <img class="w-10 h-10 rounded-full mr-4" src="{{post.author.img}}" alt="Avatar of Author">
+                <!--random avatar for everyone-->
+                <div class="flex-1 px-2">
+                    <p class="text-base font-bold text-base md:text-xl leading-none mb-2">{{ post.author.name }}</p>
+                    <p class="text-gray-600 text-xs md:text-base">Minimalist blog by a beginner writer</p>
+                </div>
+                <div class="justify-end">
+                    <button onclick="window.location.href='/dashboard'" class="bg-transparent border border-gray-500 hover:border-green-500 text-xs text-gray-500 hover:text-green-500 font-bold py-2 px-4 rounded-full">Read More</button>
+                </div>
+            </div>
+            <!--edit post button-->
+            <p class="text-base md:text-sm text-green-500 font-bold mb-6 text-right"><a href="/edit_post/{{ post.id }}" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">EDIT THIS POST</a> &gt;</p>
+            <!--check plagarism button-->
+            <p class="text-base md:text-sm text-green-500 font-bold mb-6 text-right"><a target='_blank' href="/plag_check/{{ post.id }}" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">DETECT PLAGARSIM</a> &gt;</p>
+            <!--generate grammar checker dataframe button-->
+            <p class="text-base md:text-sm text-green-500 font-bold mb-6 text-right"><a href="/gc_df/{{ post.id }}" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">CORRECT GRAMMAR</a> &gt;</p>
+        {% else %}
+            <!--Author-->
+            <div class="flex w-full items-center font-sans px-4 py-6">
+                <img class="w-10 h-10 rounded-full mr-4" src="{{post.author.img}}" alt="Avatar of Author">
+                <!--random avatar for everyone-->
+                <div class="flex-1 px-2">
+                    <p class="text-base font-bold text-base md:text-xl leading-none mb-2">{{ post.author.name }}</p>
+                    <p class="text-gray-600 text-xs md:text-base">Minimalist blog by a beginner writer</p>
+                </div>
+                <div class="justify-end">
+                    <button onclick="window.location.href='/ext_profile/{{ post.author.id }}'" class="bg-transparent border border-gray-500 hover:border-green-500 text-xs text-gray-500 hover:text-green-500 font-bold py-2 px-4 rounded-full">Read More</button>
+                </div>
+            </div>
+        {% endif %}
+
+        <!--Divider-->
+        <hr class="border-b-2 border-gray-400 mb-6 mx-4">
+        
+        <!--comments-->
+        <div class='m-2'>
+            <h1 class="font-bold font-sans break-normal text-gray-900 text-2xl md:text-4xl"> Comments </h1>
+            <form method = 'POST'>
+                {{ blog_render_field(form.comment, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }}
+                <button type = 'submit' class="w-full px-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-2">Submit Comment</button>
+            </form>
+            <div class='m-4 mx-6'>  <!--maybe display this in a table form-->
+                {% if post.comments %}
+                <br>
+                {% for i in post.comments %}
+                <div class="p-4 w-full">
+                    <div class="h-full bg-gray-100 rounded">
+                      <p class='m-0 p-0'>{{i.comment}}</p>
+                      <span class="inline-block h-1 w-10 rounded bg-indigo-500 mt-2 mb-1"></span>
+                      <br>
+                      <a class="inline-flex items-center">
+                        <img src= "{{i.commenter.img}}" class="w-12 h-12 rounded-full flex-shrink-0 object-cover object-center">
+                        <span class="flex-grow flex flex-col pl-4">
+                          <span class="title-font font-medium text-gray-900">{{i.commenter.name}}</span>
+                          <span class="text-gray-500 text-sm">{{ i.time }}</span>
+                        </span>
+                      </a>
+                      <br>
+                      {% if i.profile_id == current_user.id %}
+                      <div class = "inline-flex items-center">
+                        <form action = '/edit_comment/{{i.id}}' class='mr-2'>
+                            <input type = 'hidden' name = 'prev' value = {{post.id}}></input>
+                            <button type = 'submit'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <form action = '/delete_comment/{{i.id}}'>
+                            <input type = 'hidden' name = 'prev' value = {{post.id}}></input>
+                            <button type = 'submit'>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                          </svg>    
+                          </button>
+                        </form>
+                    </div>
+                    </div>
+                  </div>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <p>No one has commented yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!--next and prev links 2-->
+        <div class="w-full flex pt-4">
+            {% if prev_blog %}
+            <a href="/display_post/{{ prev_blog.id }}" class="w-1/2 bg-gray-50 shadow hover:shadow-md text-left p-5 mr-5">
+                <p class="text-lg text-blue-800 font-bold flex items-center"><i class="fas fa-arrow-left pr-1"></i> Previous</p>
+                <p class="pt-2">{{ prev_blog.title|capitalize }}</p>
+            </a>
+            {% endif %}
+
+            {% if next_blog %}
+            <a href="/display_post/{{ next_blog.id }}" class="w-1/2 bg-gray-50 shadow hover:shadow-md text-right p-6">
+                <p class="text-lg text-blue-800 font-bold flex items-center justify-end">Next <i class="fas fa-arrow-right pl-1"></i></p>
+                <p class="pt-2">{{ next_blog.title|capitalize }}</p>
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!--Js-->
+    <script>
+        /* Progress bar */
+        //Source: https://alligator.io/js/progress-bar-javascript-css-variables/
+        var h = document.documentElement,
+            b = document.body,
+            st = 'scrollTop',
+            sh = 'scrollHeight',
+            progress = document.querySelector('#progress'),
+            scroll;
+        var scrollpos = window.scrollY;
+        var header = document.getElementById("header");
+        var navcontent = document.getElementById("nav-content");
+
+        document.addEventListener('scroll', function() {
+
+            /*Refresh scroll % width*/
+            scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+            progress.style.setProperty('--scroll', scroll + '%');
+
+            /*Apply classes for slide in bar*/
+            scrollpos = window.scrollY;
+        });
+    </script>
+
+</body>
+{% endblock %}

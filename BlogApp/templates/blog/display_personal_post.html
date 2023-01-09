@@ -1,0 +1,93 @@
+{% extends "base.html" %} 
+{% from "_formhelpers.html" import blog_render_field %} 
+
+{% block title %} {{ post['title'] }} {% endblock %} 
+
+{% block body %}
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <!--Progress Bar-->
+    <div id="progress" class="fixed w-full z-10 top-0 h-1 z-20 top-0" style="background:linear-gradient(to right, #4dc0b5 var(--scroll), transparent 0);"></div>
+    <!--Container-->
+    <div class="container w-full md:max-w-3xl mx-auto pt-20">
+
+        <div class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal" style="font-family:Georgia,serif;">
+
+            <!--Title-->
+            <div class="font-sans">
+                <p class="text-base md:text-sm text-green-500 font-bold text-left">&lt; <a href="/personal_blogs" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">BACK TO YOUR BLOGS</a></p>
+                <h1 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">{{ post.title }}</h1>
+                <p class="text-sm md:text-base font-normal text-gray-600">Published on {{ post.date_created.strftime("%B %d, %Y at %H:%M %p") }}</p>
+            </div>
+            <!--all content are jinja values which are determined by the post that is being called-->
+
+            <!--Content-->
+            <p class="py-6 whitespace-pre-wrap">{{ post.content }}</p>
+        </div>
+
+        <!--Category -->
+        <div class="text-base md:text-sm text-gray-500 px-4 py-6">
+            Tags: 
+            {% for tag in post.tags %}
+                {% if loop.index != loop.length %}
+                {{tag.name}}, 
+                {% else %}
+                {{tag.name}}
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!--Divider-->
+        <hr class="border-b-2 border-gray-400 mb-6 mx-4">
+
+        <!--Author-->
+        <div class="flex w-full items-center font-sans px-4 py-6">
+            <img class="w-10 h-10 rounded-full mr-4" src="http://i.pravatar.cc/300" alt="Avatar of Author">
+            <!--random avatar for everyone-->
+            <div class="flex-1 px-2">
+                <p class="text-base font-bold text-base md:text-xl leading-none mb-2">{{ post.author.name }}</p>
+                <p class="text-gray-600 text-xs md:text-base">Minimalist blog by a beginner writer</p>
+            </div>
+            <div class="justify-end">
+                <button onclick="window.location.href='/dashboard'" class="bg-transparent border border-gray-500 hover:border-green-500 text-xs text-gray-500 hover:text-green-500 font-bold py-2 px-4 rounded-full">Read More</button>
+            </div>
+            <!--change after linking tables-->
+        </div>
+
+        <!--edit post button-->
+        <p class="text-base md:text-sm text-green-500 font-bold mb-6 text-right"><a href="/edit_post/{{ post.id }}" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">EDIT THIS POST</a> &gt;</p>
+        <!--plagarism checker button-->
+        <p class="text-base md:text-sm text-green-500 font-bold mb-6 text-right"><a target='_blank' href="/plag_check/{{ post.id }}" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">DETECT PLAGARSIM</a> &gt;</p>
+        <!--generate grammar checker dataframe button-->
+        <p class="text-base md:text-sm text-green-500 font-bold mb-6 text-right"><a target='_blank' href="/gc_df/{{ post.id }}" class="text-base md:text-sm text-green-500 font-bold no-underline hover:underline">CORRECT GRAMMAR</a> &gt;</p>
+
+        <!--Divider-->
+        <hr class="border-b-2 border-gray-400 mb-6 mx-4">
+
+    </div>
+
+    <!--Js-->
+    <script>
+        /* Progress bar */
+        //Source: https://alligator.io/js/progress-bar-javascript-css-variables/
+        var h = document.documentElement,
+            b = document.body,
+            st = 'scrollTop',
+            sh = 'scrollHeight',
+            progress = document.querySelector('#progress'),
+            scroll;
+        var scrollpos = window.scrollY;
+        var header = document.getElementById("header");
+        var navcontent = document.getElementById("nav-content");
+
+        document.addEventListener('scroll', function() {
+
+            /*Refresh scroll % width*/
+            scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+            progress.style.setProperty('--scroll', scroll + '%');
+
+            /*Apply classes for slide in bar*/
+            scrollpos = window.scrollY;
+        });
+    </script>
+</body>
+{% endblock %}

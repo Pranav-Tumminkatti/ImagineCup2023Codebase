@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% block title %} Blogs {% endblock %}
+
+{% block head %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+
+    .font-family-karla {
+        font-family: karla;
+    }
+</style>
+
+<!-- AlpineJS -->
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+{% endblock %}
+
+{% block body %} 
+<body class="bg-white font-family-karla">
+
+    {% if posts.pages == 0 %}
+        <!-- Text Header -->
+        <header class="w-full container mx-auto">
+            <div class="flex flex-col items-center py-12 mb-5">
+                <a class="font-bold text-gray-800 uppercase hover:text-gray-700 text-5xl">
+                    No blogs here yet!
+                </a>
+                <p class="text-lg text-gray-600">
+                    Try writing one with our <span><a href='/essay_starter' class='hover:underline hover:text-blue-800 text-blue-700'>AI-based essay starter</a>!</span>
+                </p>
+            </div>
+        </header>
+    {% else %}
+        <!-- Text Header -->
+        <header class="w-full container mx-auto">
+            <div class="flex flex-col items-center py-12">
+                <a class="font-bold text-gray-800 uppercase hover:text-gray-700 text-5xl">
+                    {{title}}
+                </a>
+                <p class="text-lg text-gray-600">
+                    Dive into the world of knowledge.
+                </p>
+            </div>
+        </header>
+
+        <!-- Topic Badges -->
+        <div class=" ml-7 mb-5 flex flex-col space-y-2">
+            <div>Topics:</div>
+            <div class="flex space-x-2">
+                {% for tag in tags %}
+                    <a href="/topic/{{tag.name}}"><div style="padding-top: 0.1em; padding-bottom: 0.1rem" class="text-s px-3 bg-{{['red','green','blue','teal','orange','yellow','gray']|random}}-300 text-gray-800 rounded-full">{{tag.name}}</div></a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!--Search-->
+        <div class="relative w-full px-5 pb-10">
+            <div class="absolute h-10 mt-1 left-0 top-0 flex items-center pl-10">
+                <svg class="h-4 w-4 fill-current text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"></path>
+                </svg>
+            </div>
+
+            <input id="search-toggle" type="search" placeholder="Search for a Blog" class="block w-full bg-gray-200 focus:outline-none focus:bg-white focus:shadow-md text-gray-700 font-bold rounded-full pl-12 pr-4 py-3" onkeyup="search()">
+        </div>
+        <!--/Search-->
+
+
+        <div class="container mx-auto flex flex-wrap py-6">
+            
+            <!-- Posts Section -->
+            <section class="w-full md:w-2/3 flex flex-col items-center">
+                <h1 id='no_results' class='hidden'>No blogs match your search query. Check your spelling, simplify your search keywords or <span class='text-blue-800 underline'><a href='/create_post'>write a blog</a></span></h1>
+                <section id = 'this_page_blogs'>
+                    {% for item in posts.items %} 
+                        <article class="flex flex-col shadow my-4">
+                            <!-- Article Image -->
+                            <a target='_blank' class="hover:opacity-75">
+                                <img src="{{item.img}}" class="object_contain"> <!--change this after implementing the blog image-->
+                            </a>
+                            <div class="bg-white flex flex-col justify-start p-6">
+                                <a class="text-blue-700 text-sm font-bold uppercase pb-4">{{item.category|capitalize}}, {{reading_time(item.content)}} read</a>
+                                <h2 class='hidden'>{{item.category}}</h2>
+                                <h1 class='hidden'>{{item.title}}</h1>
+                                <h3 class='hidden'>{{item.author.name}}</h3>
+                                {% for i in item.tags %}
+                                <h4 class='hidden'>{{i.name}}</h4>
+                                {% endfor %}
+                                <a class="text-3xl font-bold hover:text-gray-700 pb-4">{{item.title}}</a>
+                                <p class="text-sm pb-3">
+                                    By <a href="/ext_profile/{{ item.author.id }}" class="font-semibold hover:text-gray-800">{{item.author.name}}</a>, Published on {{ item.date_created.strftime("%B %d, %Y at %H:%M %p") }}
+                                </p>
+                                <a class="pb-6">{{item.synopsis}}</a>
+                                <a href="/display_post/{{ item.id }}" class="uppercase text-gray-800 hover:text-black">Continue Reading <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </section>
+                
+                <section id='all_blogs' class="hidden">
+                    {% for item in all_blogs %}
+                        <article class="flex flex-col shadow my-4">
+                            <!-- Article Image -->
+                            <a target='_blank' class="hover:opacity-75">
+                                <img src="{{item.img}}" class="object_contain"> 
+                            </a>
+                            <div class="bg-white flex flex-col justify-start p-6">
+                                <a class="text-blue-700 text-sm font-bold uppercase pb-4">{{item.category|capitalize}}, {{reading_time(item.content)}} read</a>
+                                <h2 class='hidden'>{{item.category}}</h2>
+                                <h1 class='hidden'>{{item.title}}</h1>
+                                <h3 class='hidden'>{{item.author.name}}</h3>
+                                {% for i in item.tags %}
+                                    <h4 class='hidden'>{{i.name}}</h4>
+                                {% endfor %}
+                                <a class="text-3xl font-bold hover:text-gray-700 pb-4">{{item.title}}</a>
+                                <p class="text-sm pb-3">
+                                    By <a href="/ext_profile/{{ item.author.id }}" class="font-semibold hover:text-gray-800">{{item.author.name}}</a>, Published on {{ item.date_created.strftime("%B %d, %Y at %H:%M %p") }}
+                                </p>
+                                <a class="pb-6">{{item.synopsis}}</a>
+                                <a href="/display_post/{{ item.id }}" class="uppercase text-gray-800 hover:text-black">Continue Reading <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </section>
+
+                <!-- Pagination -->
+                <div class="flex items-center py-8">
+                    {% if posts.page != 1 %}
+                        <a href="{{ url_for('general.your_blogs', page=posts.prev_num) }}" class="h-10 w-10 font-semibold text-gray-800 hover:text-gray-900 text-sm flex items-center justify-center mr-6"><i class="fas fa-arrow-left mr-2"></i> Previous</a>
+                    {% endif %}
+
+                    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                        {% if page_num %}
+                            {% if posts.page == page_num %}
+                                <a href="{{ url_for('general.your_blogs', page=page_num) }}" class="h-10 w-10 bg-blue-800 hover:bg-blue-600 font-semibold text-white text-sm flex items-center justify-center">
+                                    {{ page_num }}
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('general.your_blogs', page=page_num) }}" class="h-10 w-10 font-semibold text-gray-800 hover:bg-blue-600 hover:text-white text-sm flex items-center justify-center">
+                                    {{ page_num }}
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            ...
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if posts.page != posts.pages %}
+                        <a href="{{ url_for('general.your_blogs', page=posts.next_num) }}" class="h-10 w-10 font-semibold text-gray-800 hover:text-gray-900 text-sm flex items-center justify-center ml-3">Next <i class="fas fa-arrow-right ml-2"></i></a>
+                    {% endif %}
+                </div>
+
+            </section>
+
+            <!-- Sidebar Section -->
+            <aside class="w-full md:w-1/3 flex flex-col items-center px-3">
+
+                <div class="w-full bg-white shadow flex flex-col my-4 p-6">
+                    <p class="text-xl font-semibold pb-5">About Us</p>
+                    <p class="pb-2">We are 2 rookie secondary school coders who set out to make a web app which would be helpful to mainly students but also the general public. We have put in a lot of hard work and dedication into making this app pssible and we really hope that you enjoy it!</p>
+                    <a href="/our_journey" class="w-full bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center px-2 py-3 mt-4">
+                        Find out more about our journey
+                    </a>
+                </div>
+
+                <div class="w-full bg-white shadow flex flex-col my-4 p-6">
+                    <p class="text-xl font-semibold pb-5">Instagram</p>
+                    <div class="grid grid-cols-3 gap-3">
+                        {% for i in range (9)%}
+                        <img class="hover:opacity-75" src="https://source.unsplash.com/collection/1346951/150x150?sig={{loop.index}}">
+                        {% endfor %}
+                    </div>
+                    <a href="https://github.com/Pranav-Tumminkatti" target='_blank' class="w-full bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center px-2 py-3 mt-6">
+                        <i class="fab fa-github mr-2"></i> Follow @Pranav-Tumminkatti
+                    </a>
+                    <p class='mt-3'>Because I don't have ig :(</p>
+                </div>
+
+                <div class="w-full bg-white shadow flex flex-col my-4 p-6">
+                    <p class="text-xl font-semibold pb-5">Instagram</p>
+                    <div class="grid grid-cols-3 gap-3">
+                        {% for i in range (9)%}
+                        <img class="hover:opacity-75" src="https://source.unsplash.com/collection/1346951/150x150?sig={{loop.revindex}}">
+                        {% endfor %}
+                    </div>
+                    <a href="https://replit.com/@24yjosh074q" target='_blank' class="w-full bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center px-2 py-3 mt-6">
+                        <img src='https://www.vectorlogo.zone/logos/replit/replit-icon.svg' class="mr-2 w-5 h-5"/> Follow @Joshua-Sin
+                        
+                    </a>
+                    <p class='mt-3'>Because I don't have ig either :(</p>
+                </div>
+
+            </aside>
+
+        </div>
+    {% endif %}
+
+    <footer class="w-full border-t bg-white pb-6">
+        <div
+            class="relative w-full flex items-center invisible md:visible md:pb-12"
+            x-data="getCarouselData()"
+        >
+            <button
+                class="absolute bg-blue-800 hover:bg-blue-700 text-white text-2xl font-bold hover:shadow rounded-full w-16 h-16 ml-12"
+                x-on:click="decrement()">
+                &#8592;
+            </button>
+            <template x-for="image in images.slice(currentIndex, currentIndex + 6)" :key="images.indexOf(image)">
+                <img class="w-1/6 hover:opacity-75" :src="image">
+            </template>
+            <button
+                class="absolute right-0 bg-blue-800 hover:bg-blue-700 text-white text-2xl font-bold hover:shadow rounded-full w-16 h-16 mr-12"
+                x-on:click="increment()">
+                &#8594;
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        function getCarouselData() {
+            return {
+                currentIndex: 0,
+                images: [
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=1',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=2',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=3',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=4',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=5',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=6',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=7',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=8',
+                    'https://source.unsplash.com/collection/1346951/800x800?sig=9',
+                ],
+                increment() {
+                    this.currentIndex = this.currentIndex === this.images.length - 6 ? 0 : this.currentIndex + 1;
+                },
+                decrement() {
+                    this.currentIndex = this.currentIndex === this.images.length - 6 ? 0 : this.currentIndex - 1;
+                },
+            }
+        }
+    </script>
+
+</body>
+{% endblock %}
+
+{% block script %}
+<script src = "/static/script.js"></script>
+{% endblock %}

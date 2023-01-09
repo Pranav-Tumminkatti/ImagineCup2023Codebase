@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Pranav Tumminkatti">
+	<meta name="description" content="A blogsite">
+	<meta name="robots" content="all">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+    <style>
+        .body-bg {
+            background: linear-gradient(90deg, #d53369 0%, #daae51 100%);
+        }
+    </style>
+    {% block head %} {% endblock %}
+</head>
+
+<body class="body-bg min-h-screen pt-6 md:pt-8 pb-6 px-1 md:px-0" style="font-family:'Lato',sans-serif;">
+    {% block warning %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+            <li>
+                <div class="text-white px-6 py-4 border-0 rounded relative mt-0 mx-20 bg-{{ category }}-700 mb-8">
+                <span class="text-xl inline-block mr-5 align-middle">
+                    <i class="fas fa-bell"></i>
+                </span>
+                <span class="inline-block align-middle mr-8">
+                    <b class="capitalize">Message:</b> {{ message }}
+                </span>
+                <button class="absolute bg-transparent text-2xl font-semibold leading-none right-0 top-0 mt-4 mr-6 outline-none focus:outline-none" onclick="closeAlert(event)">
+                    <span>×</span>
+                </button>
+                </div>
+            </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    {% endblock %}
+
+    {% block header %}
+    <header class="max-w-lg mx-auto mt-0">
+        <h1 class="text-4xl font-bold text-white text-center">Unveiled</h1>
+    </header>
+    {% endblock %}
+
+    {% block main %} {% endblock %}
+    
+    {% block footer %}
+    <footer class="max-w-lg mx-auto flex justify-center text-white">
+        <a href="{% block href1 %}/{% endblock %}" class="hover:underline">{% block href_tag1 %}{% endblock %}</a>
+        <span class="mx-3">•</span>
+        <a href="{% block href2 %}/{% endblock %}" class="hover:underline">{% block href_tag2 %}{% endblock %}</a>
+    </footer>
+    {% endblock %}
+
+    
+    <script>
+        function closeAlert(event){
+        let element = event.target;
+        while(element.nodeName !== "BUTTON"){
+            element = element.parentNode;
+        }
+        element.parentNode.parentNode.removeChild(element.parentNode);
+        }
+    </script>
+    {% block script %}{% endblock %}
+</body>
+</html>

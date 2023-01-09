@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import blog_render_field %}
+
+{% block title %} Scheduler {% endblock %}
+
+{% block body %}
+<div class = "pt-6 pl-48 pb-6 pr-48">{% if stage == 1 %}
+<h1 class='font-extrabold text-3xl mb-3'>Scheduler</h1>
+<p> Welcome to the Unveiled scheduler. Use this to plan what you'd like to do today. We'll create a schedule for you and see if you're being too ambitious in the amount of time you have today! Before we get started, please have at hand what'd you like to do today, and what you have to do. You can make use of the planning space below! Anything you write here will follow you to the next stage of data input.</p>
+<br>
+<p> E.g. you have piano lessons from 3pm - 4pm, but you'd also like to play video games for at least an hour today. </p>
+<br>
+<p> Please have all the timings ready! </p>
+
+<form class="flex flex-col" method ='GET' action='/studytools/scheduler/input'>
+{{ blog_render_field(form.notes, class='m-2')}} 
+{{ blog_render_field(form.start_time, class='m-2')}} 
+{{ blog_render_field(form.fixed, class='m-2')}} 
+{{ blog_render_field(form.others, class='m-2')}} 
+{{ blog_render_field(form.p, class='m-2')}}
+<button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-4" type="submit">Next</button>
+  {% elif stage == 2 %}
+  <h1 class = "text-3xl"><strong>Insert more data.</strong></h1>
+  <form class="flex flex-col" method = 'POST' name = 'part2' action='/studytools/scheduler/results'>
+  <br>
+  <hr>
+  <br>
+  <pre> {{ notes }} </pre>
+  <br>
+  <hr>
+  <br>
+  <input type = 'hidden' name = 'notes' value = '{{notes}}'></input>
+  {% if start %}
+  <input type = 'hidden' name = 'starttrue' value = 'true'></input>
+<table>
+  <tr>
+    <td>Start Time of the whole schedule: </td>
+    <td>
+      <input required class="border border-2 text-center" type = 'number' min = 0 max = 23 name = 'starttime_h' placeholder = 'HH'></input></td>
+    <td class='dots text-center'>:</td>
+    <td>
+      <input required class="border border-2 text-center" type = 'number' min = 0 max = 59 name = 'starttime_m' placeholder = 'MM'></input>
+    </td>
+  </tr>
+  <tr>
+    <td>End Time of the whole schedule:</td>
+    <td>
+      <input required class="border border-2 text-center" type = 'number' min = 0 max = 23 name = 'endtime_h' placeholder = 'HH'></input>
+    </td>
+    <td class='dots text-center'>:</td>
+    <td>
+      <input required class="border border-2 text-center" type = 'number' min = 0 max = 59 name = 'endtime_m' placeholder = 'MM'></input>
+    </td>
+  </tr>
+</table>
+<!-- IF start is false, then we will display a <p> to notify the user that there is a default start and end time.-->
+  <input type = 'hidden' name = 'start' value = 'True'></input>
+  <br>
+  <hr>
+  <br>
+{% else %}
+<p><strong>Default start time is 00:00 and default end time is 23:59</strong></p>
+<input type = 'hidden' name = 'starttrue' value = 'false'></input>
+{% endif %}
+
+{% if num_fixed > 0 %}
+<input type = 'hidden' name = 'num_fixed' value = '{{num_fixed}}'</h2>
+<h2><strong>Fixed</strong></h2>
+
+<table>
+  <tr>
+    <td> No. </td>
+    <td colspan='3'> Start time </td>
+    <td></td>
+    <td colspan= '3'> End Time </td>
+    <td> Name </td>
+  </tr>
+{% for i in range(num_fixed) %}
+<tr>
+  <td>
+    <label>{{(i+1)|string}} </label>
+  </td> 
+  <td>
+    <input required class="border border-2 text-center" type = 'number' min = 0 max = 23 name = 'start_h{{i|string}}' placeholder = 'HH'></input>
+  </td>
+  <td class='dots text-center'>:</td>
+  <td>
+    <input required class="border border-2 text-center" type = 'number' min = 0 max = 59 name = 'start_m{{i|string}}' placeholder = 'MM'></input>
+  </td>
+  <td> - </td>
+  <td>
+    <input required class="border border-2 text-center" type = 'number' min = 0 max = 23 name = 'end_h{{i|string}}' placeholder = 'HH'></input>
+  </td>
+  <td class='dots text-center'>:</td>
+  <td>
+    <input required class="border border-2 text-center" type = 'number' min = 0 max = 59 name = 'end_m{{i|string}}' placeholder = 'MM'></input>
+  </td>
+  <td>
+    <input required type = 'text' name = 'event{{i|string}}'  class="border border-2"></input>
+  </td>
+</tr>
+{% endfor %}
+</table>
+<br>
+  <hr>
+  <br>
+{% endif %}
+{% if num_others > 0 %}
+<input type = 'hidden' name = 'num_others' value = '{{num_others}}'></input>
+<h2> <strong>Others</strong> </h2>
+<table>
+  <tr>
+    <td>
+      Name
+    </td>
+    <td colspan = '3'>
+      Est. Duration
+    </td>
+    <td>
+      {{priority}}
+      <input type = 'hidden' name = 'priority' value = '{{priority}}'></input>
+    </td>
+  </tr>
+{% for i in range(num_others) %}
+<tr>
+  <td>
+    <input required type = 'text' name = 'other{{i|string}}'  class="border border-2 text-center"></input>
+  </td>
+  <td>
+    <input required type = 'number' min = 0 max = 23 name = 'hour{{i|string}}' placeholder = 'HH'  class="text-center border border-2"></input>
+  </td>
+  <td class='dots text-center'>:</td>
+  <td>
+    <input required type = 'number' min = 0 max = 59 name = 'minute{{i|string}}' placeholder = 'MM'  class="text-center border border-2"></input>
+  </td>
+  <td>
+    <input required type = 'number' min = 0 name = 'rank{{i|string}}'  class="border border-2 text-center"></input>
+  </td>
+  </tr>
+{% endfor %}
+</table>
+<br>
+  <hr>
+  <br>
+{% endif %}
+
+
+<button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-2" type="submit">Create Schedule</button>
+
+
+{% elif stage == 3 %}
+{% if (fixed|length) > 0 %}
+<h1 class = "text-3xl"><strong>Your schedule.</strong></h1>
+<br>
+<p>Click on any item to edit, and then press 'Done'</p>
+<br>
+<hr>
+<br>  
+
+{% endif %}
+<form action = '/studytools' method = 'POST'>
+<p>Number of items: {{(fixed|length)}}</p>
+
+<table class = 'result'>
+  <!-- we loop through every item (each dict) in the 'final_f' list, displaying every event and their items on a new row in the table -->
+{% for i in range(fixed|length) %}
+<tr>
+  <td class = "text-center"><input name = 'start{{(i|string)}}' value = '{{fixed[i]['start']}}' class = "text-center"></input>-<input name = 'end{{(i|string)}}' value='{{fixed[i]['end']}}' class = "text-center"></input></td>
+  <td class = "text-center"><input name = 'fixed{{(i|string)}}' value = '{{fixed[i]['name']}}'></input></td>
+</tr>
+{% endfor %}
+</table>
+<!-- We also check if there are any tasks that cannot fit into the schedule. If so, no title or table headers will be displayed. -->
+<table class = 'result'>
+{% if (other|length) > 0 %}
+<h3> Events that cannot fit into the schedule </h3>
+<tr>
+  <th class = 'center'>Name</th>
+  <th class = 'center'>Est. Time</th>
+  <th class = 'center'>Priority</th>
+</tr>
+{% endif %}
+<input type = 'hidden' value = {{(other|length)}} name = 'len_o'></input>
+{% for i in range(other|length) %}
+<tr>
+  <td><input name = 'other{{(i|string)}}' value = '{{other[i]['name']}}' class = "text-center"></input></td>
+  <td><input name = 'est{{(i|string)}}' value = '{{other[i]['est']}}' class = "text-center"></input></td>
+  <td><input name = 'rank{{(i|string)}}' value = '{{other[i]['rank']}}' class = "text-center"></input></td>
+</tr>
+{% endfor %}
+</table>
+<br>
+<hr>
+<br>
+<button type = 'submit' class = "nav-link active ml-2 font-medium flex-shrink-0 text-indigo-600 hover:text-indigo-500">Done!</button>
+{% endif %}
+</form>
+
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script src = "/static/studyvalidator.js"></script>
+{% endblock %}

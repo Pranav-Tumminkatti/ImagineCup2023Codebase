@@ -1,0 +1,18 @@
+{% macro blog_render_field(field) %}
+
+  <div class="mt-6 pt-3 rounded bg-gray-200">
+    {{ field.label(class_="block text-gray-700 text-sm font-bold mb-2 ml-3") }}
+    {{ field(**kwargs)|safe }}
+  </div>
+
+  <div class='bg-white mt-0'>
+    {% if field.errors %}
+      {% for error in field.errors %}
+        <li class='text-red-600 my-1 bg-white text-sm'>{{ error }}</li>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  </dd>
+{% endmacro %}
+

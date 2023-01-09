@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %} Scheduler {% endblock %}
+{% block body %} 
+<div class = "pt-6 pl-48 pb-6 pr-48">
+<h1 class = "text-3xl"><strong>Hi, {{profile.name}}!</strong></h1>
+<br>
+{% if schedule_made %}
+<h4>Here's your schedule for today.</h4>
+<br>
+<p>Click on an item to edit</p>
+<br>
+<hr>
+<br>
+<form action = '/studytools' method = 'POST'>
+<input type = 'hidden' value = {{len_f}} name = 'len_f'></input>
+<table class = 'result'>
+{% if len_f > 0 %}
+<tr>
+  <td class = "text-center"><strong>Start</strong></td>
+  <td></td>
+  <td class = "text-center"><strong>End</strong></td>
+  <td class = "text-center"><strong>Name</strong></td>
+</tr>
+{% endif %}
+{% for i in range(len_f) %}
+<tr>
+  <td>
+    <input  name = 'start{{(i|string)}}' value = "{{fixed[i]['start']}}" class="col text-center"></input>
+  </td>
+  <td >
+    -
+  </td>
+  <td>
+    <input name = 'end{{(i|string)}}' value='{{fixed[i]['end']}}' class="col text-center">
+    </input>
+  </td>
+  <td>
+    <input name = 'fixed{{(i|string)}}' value = '{{fixed[i]['name']}}' class="col text-center">
+    </input>
+  </td>
+</tr>
+{% endfor %}
+</table>
+
+
+
+<table class = 'result'>
+{% if (len_o) > 0 %}
+<h3> Other Tasks </h3>
+<tr>
+  <th>Name</th>
+  <th>Est. Time</th>
+  <th>Priority</th>
+</tr>
+{% endif %}
+<input type = 'hidden' value = len_o name = 'len_o'></input>
+{% for i in range(len_o) %}
+<tr>
+  <td><input name = 'other{{(i|string)}}' value = '{{other[i]['name']}}' class="text-center"></input></td>
+  <td><input name = 'est{{(i|string)}}' value = '{{other[i]['est']}}' class="text-center"></input></td>
+  <td><input name = 'rank{{(i|string)}}' value = '{{other[i]['rank']}}' class="text-center"></input></td>
+</tr>
+{% endfor %}
+</table>
+<br>
+<hr>
+<br>
+
+
+<a href = '/studytools/scheduler' class="nav-link active col ml-2 font-medium flex-shrink-0 text-indigo-600 hover:text-indigo-500 ">Make a new schedule</a>
+<button type = 'submit' class="nav-link active ml-2 font-medium flex-shrink-0 text-indigo-600 hover:text-indigo-500 ">Save Changes</button>
+
+</form>
+{% else %}
+
+
+<a href = '/studytools/scheduler' class="nav-link active ml-2 font-medium flex-shrink-0 text-indigo-600 hover:text-indigo-500 ">Make a new schedule</a>
+
+{% endif %}
+
+</div>
+{% endblock %}

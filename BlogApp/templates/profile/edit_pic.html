@@ -1,0 +1,27 @@
+{% extends "form_base.html" %}
+{% from "_formhelpers.html" import blog_render_field %}
+
+{% block title %}Edit Profile Picture{% endblock %}
+
+{% block main %}
+<main class="bg-white max-w-lg mx-auto p-6 md:p-12 my-8 rounded-lg shadow-2xl">
+    <section>
+        <h3 class="font-bold text-2xl">Welcome to Unveiled</h3>
+        <p class="text-gray-600 pt-2">Edit your profile.</p>
+    </section>
+
+    <section class="mt-4">
+        <form class="flex flex-col" method="POST" action="/edit_pic" enctype="multipart/form-data"> 
+            {{ form.csrf_token }}
+            {{ blog_render_field(form.img, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }}
+            
+            <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-6" type="submit">Upload</button>
+        </form>
+    </section>
+</main>
+{% endblock %}
+
+{% block href1 %}/account{% endblock %}    {% block href_tag1 %}Account{% endblock %}
+{% block href2 %}/contact_us{% endblock %}    {% block href_tag2 %}Contact Us{% endblock %}
+
+    

@@ -1,0 +1,45 @@
+{% extends "form_base.html" %}
+{% from "_formhelpers.html" import blog_render_field %}
+
+{% block title %}Edit "{{ post_data.title }}"{% endblock %}
+    
+{% block main %}
+<main class="bg-white max-w-lg mx-auto p-6 md:p-12 my-8 rounded-lg shadow-2xl">
+    <section>
+        <h3 class="font-bold text-2xl">Welcome to Unveiled</h3>
+        <p class="text-gray-600 pt-2">Edit "{{ post_data.title }}".</p>
+    </section>
+
+    <section class="mt-4">
+        <form class="flex flex-col" method="POST" action="{{ url_for('blog.edit_post', id=post_data.id) }}" enctype="multipart/form-data"> 
+            {{ form.csrf_token }}
+            {{ blog_render_field(form.img, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }}
+            {{ blog_render_field(form.category, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }} 
+            {{ blog_render_field(form.title, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }}
+            {{ blog_render_field(form.content, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-40") }}
+            {{ blog_render_field(form.tags, class="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3") }}
+            <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200 mt-6" type="submit">Upload</button>
+        </form>
+        <div class="flex justify-end"> 
+            <form action="{{ url_for('blog.delete_post', id=post_data.id) }}" method='POST'>   <!--form imput to delete the post, sends over the id that it received from the edit_post route to the delete_post route-->
+                <input type='submit' value='Delete this post -->' onclick="return confirm('Are you sure you want to delete this post?')" class="text-base bg-transparent mt-4 mb-0 text-purple-900 hover:text-purple-700 hover:underline mb-6">
+                                                                    <!--conformation message-->
+            </form>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    window.addEventListener('beforeunload', function (e) {
+        e.preventDefault();
+        e.returnValue = '';
+    });
+</script>
+{% endblock %}
+
+{% block href1 %}/display_post/{{post_data.id}}{% endblock %}       {% block href_tag1 %}Back{% endblock %}
+{% block href2 %}/contact_us{% endblock %}                          {% block href_tag2 %}Contact Us{% endblock %}
+
+    
