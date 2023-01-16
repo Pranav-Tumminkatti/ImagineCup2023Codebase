@@ -1,3 +1,8 @@
+##stuff changed: (Joshua 13/1/23)
+##copied over tables from Nathan's as much as possible
+##the credentials table was merged with the auth table and is now auth
+##Username column in auth is now in User
+
 from BlogApp import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,27 +12,132 @@ from flask import session
 from BlogApp.utilities.summarizer import *
 import random
 
-
 class Auth(db.Model, UserMixin):
   id = db.Column(db.Integer, primary_key = True)
-  username = db.Column(db.String(50), unique=True)
+  type = db.Column(db.String(50)) #new column
+  username = db.Column(db.String(50), unique=True)  #this is moved to the Users table --> this breaks the auth systems
   password = db.Column(db.String(256))
   email = db.Column(db.String(120), index=True, unique=True)
+  phone_number = db.Column(db.String(50), unique = True)
+  
+  users = db.relationship('User',backref='Auth',lazy=True)
+  clinics = db.relationship('Clinic', backref='Auth',lazy=True)
+  pharmacies = db.relationship('Pharmacy',backref = 'Auth',lazy=True)
+  
   date_created = db.Column(db.DateTime, default=datetime.now(), nullable=False)
   deleted = db.Column(db.Boolean, default=False, nullable=False)
-  
   confirmed = db.Column(db.Boolean, nullable=False, default=False)
-  
   profile = db.relationship("Profile", backref = "user", lazy='joined', uselist=False)
 
-  def __repr__(self):
-    return "<User {}>".format(self.username)
+  #def __repr__(self):
+    #return "<User {}>".format(self.username)
 
   def set_password(self, password):
     self.password = generate_password_hash(password)
 
   def check_password(self, password):
     return check_password_hash(self.password, password)
+
+class User(db.Model, UserMixin):
+  id = db.Column(db.Integer, primary_key = True, unique = True)
+  credentials = db.Column('auth',db.Integer,db.ForeignKey('auth.id'))
+  name = db.Column(db.String(1000))
+  location = db.Column(db.String(1000))
+  conditions = db.relationship('UserConditions',backref='User',lazy=True)
+
+  def __repr__(self):
+    return "<User {}>".format(self.name)
+
+
+class Condition(db.Model):
+  id = db.Column(db.Integer, primary_key=True, unique=True)
+  name = db.Column(db.String(1000))
+  health_risk_warning = db.Column(db.String(10000))
+  age_range = db.Column(db.String(1000))
+  region = db.Column(db.String(1000))
+  users = db.relationship('UserConditions', backref='Condition', lazy=True)
+  symptoms = db.relationship('ConditionSymptoms', backref='Condition', lazy=True)
+
+class Symptom(db.Model):
+  id = db.Column(db.Integer, primary_key=True, unique=True)
+  text_description = db.Column(db.String(10000))
+  conditions = db.relationship('ConditionSymptoms', backref='Symptom', lazy=True)
+  medicines = db.relationship('SymptomMedicines', backref='Symptom', lazy=True)
+
+class Medicine(db.Model):
+  id = db.Column(db.Integer, primary_key=True, unique=True)
+  name = db.Column(db.String(1000))
+  per_unit_cost = db.Column(db.String(100))
+  symptoms = db.relationship('SymptomMedicines', backref='Medicine', lazy=True)
+
+class Pharmacy(db.Model, UserMixin):
+  id = db.Column(db.Integer, primary_key=True, unique=True)
+  name = db.Column(db.String(1000))
+  open_time = db.Column(db.String(4), nullable=False)  #will be a 4-digit number, use Time class
+  close_time = db.Column(db.String(4), nullable=False)
+  location = db.Column(db.String(1000))
+  medicines = db.relationship('PharmaciesMedicine', backref='Pharmacy', lazy=True)
+  credentials = db.Column('auth', db.Integer, db.ForeignKey('auth.id'))
+
+  def __repr__(self):
+    return "<Pharmacy {}>".format(self.name)
+
+
+class Clinic(db.Model, UserMixin):
+  id = db.Column(db.Integer, primary_key=True, unique=True)
+  name = db.Column(db.String(1000))
+  open_time = db.Column(db.String(4), nullable=False)  #will be a 4-digit number, use Time class
+  close_time = db.Column(db.String(4), nullable=False)
+  location = db.Column(db.String(1000))
+  medicines = db.relationship('ClinicsMedicine', backref='Clinic', lazy=True)
+  doctors = db.relationship('Doctor', backref='Clinic', lazy=True)
+
+  credentials = db.Column('auth', db.Integer, db.ForeignKey('auth.id'))
+
+  def __repr__(self):
+    return "<Clinic {}>".format(self.name)
+
+
+class Doctor(db.Model):
+  id = db.Column(db.Integer, primary_key=True, unique=True)
+  clinic = db.Column('clinic', db.Integer, db.ForeignKey('clinic.id'))
+  name = db.Column(db.String(1000))
+  appointments = db.relationship('Appointment', backref='Doctor', lazy=True)
+
+
+class UserConditions(db.Model):
+  user = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+  condition = db.Column(db.Integer, db.ForeignKey('condition.id'), primary_key=True)
+  date_created = db.Column(db.DateTime, default=datetime.now())
+  iscurrent = db.Column(db.Boolean, default=True)
+
+class ConditionSymptoms(db.Model):
+  condition = db.Column(db.Integer, db.ForeignKey('condition.id'), primary_key=True)
+  symptom = db.Column(db.Integer, db.ForeignKey('symptom.id'), primary_key=True)
+  percentage = db.Column(db.Integer)
+
+class SymptomMedicines(db.Model):
+  symptom = db.Column(db.Integer, db.ForeignKey('symptom.id'), primary_key=True)
+  medicine = db.Column(db.Integer, db.ForeignKey('medicine.id'), primary_key=True)
+  extra_notes = db.Column(db.String(10000))
+
+class PharmaciesMedicine(db.Model):
+  medicine = db.Column(db.Integer, db.ForeignKey('medicine.id'), primary_key=True)
+  pharmacy = db.Column(db.Integer, db.ForeignKey('pharmacy.id'), primary_key=True)
+  stock = db.Column(db.Integer)
+
+class ClinicsMedicine(db.Model):
+  medicine = db.Column(db.Integer, db.ForeignKey('medicine.id'), primary_key=True)
+  clinic = db.Column(db.Integer, db.ForeignKey('clinic.id'), primary_key=True)
+  stock = db.Column(db.Integer)
+
+
+class Appointment(db.Model):
+  id = db.Column(db.Integer, primary_key=True, unique=True)
+  clinic = db.Column(db.Integer, db.ForeignKey(Clinic.id), nullable=False)
+  doctor = db.Column(db.Integer, db.ForeignKey(Doctor.id))
+  start_time = db.Column(db.String(4), nullable=False)
+  end_time = db.Column(db.String(4), nullable=False)
 
 
 @login.user_loader  #gets all the user data from the User table and loads into the UserMixin class to be used anywhere in the application
@@ -143,9 +253,21 @@ class Message(db.Model):
   read = db.Column(db.Boolean, default=False)
   link = db.Column(db.String, nullable=True)
   
+  
+#new tables here:
+
+'''
+class Pharmacy(db.Model):
+  id = db.Column(db.Integer,primary_key = True, unique = True, db.ForeignKey(Auth.id))
+  name = db.Column(db.String, nullable = False, unique = True)
+  open_time = db.Column(db.String(4), nullable = False)
+  close_time = db.Column(db.String(4), nullable = False)
+  location = 
+'''
+
 def insert_dummy_data(db):
-  admin = Auth(username="admin", email="admin@example.com")
-  guest = Auth(username="guest", email="guest@example.com",confirmed=True)
+  admin = Auth(username='admin', email="admin@example.com")
+  guest = Auth(username='guest', email="guest@example.com",confirmed=True)
   admin.set_password("secretpassword")
   guest.set_password("secretpassword")
   db.session.add(admin)
