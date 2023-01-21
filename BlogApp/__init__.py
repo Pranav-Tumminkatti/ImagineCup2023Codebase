@@ -106,6 +106,7 @@ from BlogApp.views.general import general
 from BlogApp.views.profile import profile
 from BlogApp.views.study_app import study_app
 from BlogApp.views.messages import message
+from BlogApp.views.appointments import appointments
 
 app.register_blueprint(general)
 app.register_blueprint(auth)
@@ -113,3 +114,4 @@ app.register_blueprint(blog)
 app.register_blueprint(profile)
 app.register_blueprint(study_app)
 app.register_blueprint(message)
+app.register_blueprint(appointments)

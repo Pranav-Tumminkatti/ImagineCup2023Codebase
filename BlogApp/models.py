@@ -103,6 +103,7 @@ class Doctor(db.Model):
   clinic = db.Column('clinic', db.Integer, db.ForeignKey('clinic.id'))
   name = db.Column(db.String(1000))
   appointments = db.relationship('Appointment', backref='Doctor', lazy=True)
+  picture_url = db.Column(db.String(1000))
 
 
 class UserConditions(db.Model):

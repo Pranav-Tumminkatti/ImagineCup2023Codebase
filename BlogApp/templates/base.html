@@ -79,29 +79,16 @@
         <div class="container mx-auto flex flex-wrap p-3 flex-col md:flex-row items-center">
           <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
             <img src="{{url_for('static', filename='Unveiled.jpg')}}" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full"/>
-            <span class="ml-3 text-xl">Unveiled</span>
+            <span class="ml-3 text-xl">dAIgnosis</span>
           </a>
           <nav class="navbar md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
             <a href='/' class="mr-5 hover:text-gray-900">Home</a>
-            <a href='/about_us' class="mr-5 hover:text-gray-900">About</a>
-            <a href='/our_journey' class="mr-5 hover:text-gray-900">Our Journey</a>
-            <a href='/your_blogs' class="mr-5 hover:text-gray-900">Blogs</a>
-            <a href='/featured_blogs' class="mr-5 hover:text-gray-900">Featured</a>
-            <a href='/writers' class="mr-5 hover:text-gray-900">Writers</a>
+            <a href='/clinics' class="mr-5 hover:text-gray-900">clinics</a>
             {% if current_user.is_authenticated %}  <!--show in navbar only if user is logged in-->
-              <a href='/create_post' class="mr-5 hover:text-gray-900">Post</a>
-                <div class="dropdown mr-5">
-                  <button id='flash-x' class="dropbtn inline-flex items-center bg-gray-100 border-0 focus:outline-none hover:text-gray-900 rounded text-base">Tools<p>
-                    </p><i class="ml-1 fa fa-caret-down"></i>
-                  </button>
-                  <div class="dropdown-content">
-                    <a href ='/studytools' class="dropdown-item">Scheduler</a>
-                    <a href ='/essay_starter' class="dropdown-item">Essay Starter</a>
-                    <a href ='/plag_check_form' class="dropdown-item">Plagarism Checker</a>
-                  </div>
-                </div>
+              <a href='/diagnosis' class="mr-5 hover:text-gray-900">Diagnosis</a>
+              <a href='/find_clinic' class="mr-5 hover:text-gray-900">Book doctors near you</a>
+              <a href='/healthmap' class="mr-5 hover:text-gray-900">Healthmap</a>
             {% endif %} 
-            <a href='/contact_us' class="mr-5 hover:text-gray-900">Contact Us</a> 
           </nav>
 
           {% if current_user.is_authenticated %}  <!--in the box at the top-right of the page, display Login/Sign Up if the user is not logged in, and Your Profile if he is-->

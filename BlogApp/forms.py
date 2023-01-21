@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import StringField, TextAreaField, BooleanField, PasswordField
-from wtforms.fields.html5 import DateField, IntegerField
+from wtforms.fields import DateField, IntegerField
 from wtforms.fields import RadioField, SelectField, DecimalField
 from flask import flash
 from wtforms.validators import InputRequired, ValidationError, DataRequired, Length, Email, EqualTo, NumberRange
@@ -166,3 +166,34 @@ class edit_comment(FlaskForm):
 
 class private_message(FlaskForm):
   message = TextAreaField(validators=[DataRequired()])
+
+
+
+class Add_appointment(FlaskForm):
+  doctor = IntegerField("Doctor id",validators=[InputRequired()])
+  clinic = IntegerField("Clinic id",validators=[InputRequired()])
+  start_time = StringField('Start time',validators=[InputRequired(),Length(min=4,max=4)])
+  end_time = StringField('End time',validators=[InputRequired(),Length(min=4,max=4)])
+
+class Add_doctor(FlaskForm):
+  doctor = StringField("Doctor's username",validators=[InputRequired()])
+  clinic = IntegerField("Clinic id",validators=[InputRequired()])
+
+class Add_medicine(FlaskForm):
+  name = StringField("Name",validators=[InputRequired()])
+  stock = IntegerField("Units available (stock)",validators=[InputRequired()])
+  puc = StringField("Price per unit ($)",validators=[InputRequired()])
+
+class Login_client(FlaskForm):
+  username = StringField("ID",validators=[InputRequired()])
+  email = StringField("Email",validators=[InputRequired(),Email()])
+  password = PasswordField("Password",validators=[InputRequired()])
+
+class Login_user(FlaskForm):
+  username = StringField("ID",validators=[InputRequired()])
+  email = StringField("Email",validators=[InputRequired(),Email()])
+  password = PasswordField("Password",validators=[InputRequired()])
+
+class Find_slot(FlaskForm):
+  start_time = StringField('Start time',validators=[InputRequired(),Length(min=4,max=4)])
+  end_time = StringField('End time',validators=[InputRequired(),Length(min=4,max=4)])
