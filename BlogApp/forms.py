@@ -7,6 +7,7 @@ from flask import flash
 from wtforms.validators import InputRequired, ValidationError, DataRequired, Length, Email, EqualTo, NumberRange
 import email_validator
 from BlogApp.models import Auth
+from geopy import *
 
 class Post(FlaskForm):
   category = StringField("Category", validators=[InputRequired(), Length(max=50)])
@@ -59,6 +60,63 @@ class Sign_up(FlaskForm):
   email = StringField('Email', validators=[DataRequired(), Email()])
   password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
   confirm  = PasswordField('Confirm Password')
+  
+  def validate_username(form, field):
+    validated = True  
+    user = Auth.query.filter_by(username = form.username.data).first()
+    if user is not None:
+      form.username.errors.append("This username already exists! Please choose another one!")
+      validated = False
+    return validated
+  
+  def validate_email(form, field):
+    validated = True  
+    user = Auth.query.filter_by(email = form.email.data).first()
+    if user is not None:
+      form.email.errors.append("An account with that email already exists! Please log into your account.")
+      validated = False
+    return validated
+  
+  def validate_password(form, field):
+    validated = True  
+    if len(field.data) < 6:
+      form.password.errors.append("Length of password must be at least 6 characters!")
+      validated = False
+    
+    if not any(char.isdigit() for char in field.data):
+      form.password.errors.append("Password should contain at least 1 numerical character!")
+      validated = False
+      
+    if not any(c in "!.@#$%^&*()-+?_=,<>/" for c in field.data):
+      form.password.errors.append("Password should contain at least 1 special character!")
+      validated = False
+      
+    return validated
+  
+  def validate_confirm(form, field):
+    validated = True  
+    if form.password.data != form.confirm.data:
+      form.confirm.errors.append("Passwords don't match, please try again.")
+      validated = False
+    return validated
+  
+
+class clinet_sign_up(FlaskForm):
+  username = StringField('Username', validators=[DataRequired(), Length(max=50)])
+  email = StringField('Email', validators=[DataRequired(), Email()])
+  phone_number = StringField('Phone Number', validators=[DataRequired()])
+  password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
+  confirm  = PasswordField('Confirm Password')
+  name = StringField("Official Name", validators=[DataRequired()])
+  open_time = IntegerField("Opening time (4 digit 24 hour clock)", validators=[DataRequired()])
+  close_time = IntegerField("Closing time (4 digit 24 hour clock)", validators=[DataRequired()])
+  address = StringField("Address", validators=[DataRequired()])
+
+  def validate_address(form, field):
+    locator = Nominatim(user_agent="myGeocoder")
+    location = locator.geocode(form.address.data)
+    if type(location.latitude) == 
+
   
   def validate_username(form, field):
     validated = True  
@@ -197,3 +255,4 @@ class Login_user(FlaskForm):
 class Find_slot(FlaskForm):
   start_time = StringField('Start time',validators=[InputRequired(),Length(min=4,max=4)])
   end_time = StringField('End time',validators=[InputRequired(),Length(min=4,max=4)])
+

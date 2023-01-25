@@ -14,7 +14,7 @@ import random
 
 class Auth(db.Model, UserMixin):
   id = db.Column(db.Integer, primary_key = True)
-  type = db.Column(db.String(50)) #new column
+  user_type = db.Column(db.String(50)) #new column
   username = db.Column(db.String(50), unique=True)  #this is moved to the Users table --> this breaks the auth systems
   password = db.Column(db.String(256))
   email = db.Column(db.String(120), index=True, unique=True)

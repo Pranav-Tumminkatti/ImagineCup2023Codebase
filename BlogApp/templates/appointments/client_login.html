@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="Pranav Tumminkatti">
+	<meta name="description" content="A blogsite">
+	<meta name="robots" content="all">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>Client Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul>
+          {% for category, message in messages %}
+            <li>
+              <div class="text-white px-6 py-4 border-0 rounded relative mx-24 mb-0 bg-{{ category }}-700 my-3 z-50">
+                <span class="text-xl inline-block mr-5 align-middle">
+                  <i class="fas fa-bell"></i>
+                </span>
+                <span class="inline-block align-middle mr-8">
+                  <b class="capitalize">Message:</b> {{ message }}
+                </span>
+                <button id='flash-x' class="absolute bg-{{ category }}-700 text-2xl font-semibold leading-none right-0 top-0 mt-4 mr-6 outline-none focus:outline-none" onclick="closeAlert(event)">
+                  <span>×</span>
+                </button>
+              </div>
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+        <div>
+            <img src="{{url_for('static', filename='Unveiled.jpg')}}" class="mx-auto h-12 w-auto rounded-full" alt='Logo'/>
+            
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Login to your client account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+            Or
+            <a href="auth/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+                go back to user login
+            </a>
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST">
+            {{ form.csrf_token }}
+            <div class="rounded-md shadow-sm -space-y-px">
+            <div>
+                {{form.username.label(class="sr-only")}}
+                {% if not form.username.errors %}
+                    {{form.username(placeholder="Username", class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm")}}
+                {% else %}
+                    {{form.username(placeholder="Username", class="appearance-none rounded-none relative block w-full px-3 py-2 border border-red-500 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm")}}
+                    {% for error in form.username.errors %}
+                        <p class="text-xs text-red-500 mt-1 mb-2">- {{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div>
+                {{form.password.label(class="sr-only")}}
+                {% if not form.password.errors %}
+                    {{form.password(placeholder="Password", class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm")}}
+                {% else %}
+                    {{form.password(placeholder="Password", class="appearance-none rounded-none relative block w-full px-3 py-2 border border-red-500 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm")}}
+                    {% for error in form.password.errors %}
+                        <p class="text-xs text-red-500 mt-1 mb-2">- {{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            </div>
+    
+            <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                {{form.remember_me(class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded")}}
+                {{form.remember_me.label(class="ml-2 block text-sm text-gray-900")}}
+            </div>
+    
+            <div class="text-sm">
+                <a href="/reset" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot your password?
+                </a>
+            </div>
+            </div>
+    
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Login
+                </button>
+                <div class='text-center mt-3'>
+                    <a href="/client_signup" class="inline-block font-sm text-sm text-indigo-600 hover:text-indigo-500">
+                        Don't have a client account yet? Sign up!
+                    </a>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+
+  </body>
+</html>

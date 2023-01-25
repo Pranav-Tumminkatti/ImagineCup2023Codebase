@@ -9,7 +9,7 @@ import datetime
 
 from BlogApp.utilities.token import generate_confirmation_token, confirm_token,ts
 from BlogApp.forms import Login, Sign_up, EmailForm, PasswordForm
-from BlogApp.models import Auth, Profile
+from BlogApp.models import Auth, Pharmacy, Clinic
 from BlogApp.utilities.email import send_email
 from BlogApp.utilities.decorators import check_confirmed
 auth = Blueprint('auth', __name__)
