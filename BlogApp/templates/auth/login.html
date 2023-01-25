@@ -1,3 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="location"></div>
+    <script>
+      var div = document.getElementById("location");
+      
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition, console.log);
+        } else {
+          div.innerHTML = "The Browser Does not Support Geolocation";
+        }
+      }
+
+      function showPosition(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        var api_key = "AIzaSyDOEvM4WKFfOhqWi6qXP6fouOy9UAD7nSM";
+        var img_url = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lon}&zoom=14&size=400x300&sensor=false&key=${api_key}`;
+        div.innerHTML = `<img src='${img_url}'>`;
+      }
+      getLocation();
+    </script>
+  </body>
+</html>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,37 +145,4 @@
     </div>
 
 </body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <div id="location"></div>
-    <script>
-      var div  = document.getElementById("location");
-      function getLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-          div.innerHTML = "The Browser Does not Support Geolocation";
-        }
-      }
-
-      function showPosition(position) {
-        div.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;
-      }
-
-      function showError(error) {
-        if(error.PERMISSION_DENIED){
-            div.innerHTML = "The User have denied the request for Geolocation.";
-        }
-      }
-      getLocation();
-    </script>
-  </body>
 </html>
